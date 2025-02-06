@@ -1,0 +1,45 @@
+ poetry run python index.py
+INFO:db.setup:Database tables created successfully
+Traceback (most recent call last):
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/cdp/cdp_api_client.py", line 176, in _build_jwt
+    private_key = serialization.load_pem_private_key(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: ('Could not deserialize key data. The data may be in an incorrect format, the provided password may be incorrect, it may be encrypted with an unsupported algorithm, or it may be an unsupported key type (e.g. EC curves with explicit parameters).', [<OpenSSLError(code=503841036, lib=60, reason=524556, reason_text=unsupported)>])
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/runner/workspace/index.py", line 17, in <module>
+    agent_executor = initialize_agent()
+                     ^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/agent/initialize_agent.py", line 38, in initialize_agent
+    agentkit = CdpAgentkitWrapper(**values)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/pydantic/main.py", line 212, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/cdp_langchain/utils/cdp_agentkit_wrapper.py", line 53, in validate_environment
+    wallet = Wallet.create(network_id=network_id)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/cdp/wallet.py", line 139, in create
+    model = Cdp.api_clients.wallets.create_wallet(create_wallet_request)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/pydantic/validate_call_decorator.py", line 60, in wrapper_function
+    return validate_call_wrapper(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/pydantic/_internal/_validate_call.py", line 96, in __call__
+    res = self.__pydantic_validator__.validate_python(pydantic_core.ArgsKwargs(args, kwargs))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/cdp/client/api/wallets_api.py", line 102, in create_wallet
+    response_data = self.api_client.call_api(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/cdp/cdp_api_client.py", line 116, in call_api
+    self._apply_headers(url, method, header_params)
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/cdp/cdp_api_client.py", line 155, in _apply_headers
+    token = self._build_jwt(url, method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/cdp/cdp_api_client.py", line 182, in _build_jwt
+    raise InvalidAPIKeyFormatError("Could not parse the private key") from e
+cdp.errors.InvalidAPIKeyFormatError: Could not parse the private key
+ Environment updated. Reloading shell...
+~/workspace$ 
