@@ -1,10 +1,9 @@
 
 import sqlite3
-from typing import Optional, Dict
+from typing import Optional
 import logging
 import json
 import os
-import constants
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,33 +15,34 @@ def add_wallet_info(info: str) -> None:
     try:
         with sqlite3.connect("agent.db") as con:
             cur = con.cursor()
-            cur.execute("DELETE FROM wallet")  # Clear existing entries
-            cur.execute("INSERT INTO wallet(info) VALUES (?)", (info,))
+            
+            # Check if wallet info exists
+            cur.execute("SELECT id FROM wallet")
+            existing = cur.fetchone()
+            
+            if existing:
+                # Update existing wallet info
+                cur.execute("UPDATE wallet SET info = ? WHERE id = ?", (info, existing[0]))
+            else:
+                # Insert new wallet info
+                cur.execute("INSERT INTO wallet(info) VALUES (?)", (info,))
+            
             con.commit()
-            logger.info("Wallet configuration updated")
+            
+            if cur.rowcount > 0:
+                logger.info("Wallet configuration updated")
+            else:
+                logger.warning("No changes made to wallet configuration")
                 
     except sqlite3.Error as e:
         logger.error(f"Database error occurred: {str(e)}")
     except Exception as e:
         logger.error(f"Unexpected error occurred: {str(e)}")
 
-def get_wallet_info() -> Optional[Dict]:
+def get_wallet_info() -> Optional[str]:
     """
-    Retrieve wallet information from the database or environment.
-    Prioritizes environment variables over database.
+    Retrieve wallet information from the database.
     """
-    # First check environment variables
-    wallet_id = os.getenv(constants.WALLET_ID_ENV_VAR)
-    wallet_seed = os.getenv(constants.WALLET_SEED_ENV_VAR)
-    
-    if wallet_id and wallet_seed:
-        logger.info("Using wallet info from environment variables")
-        return {
-            'id': wallet_id,
-            'seed': wallet_seed
-        }
-    
-    # If not in environment, try database
     try:
         with sqlite3.connect("agent.db") as con:
             cur = con.cursor()
@@ -51,7 +51,8 @@ def get_wallet_info() -> Optional[Dict]:
             
             if result:
                 return json.loads(result[0])
-            return None
+            else:
+                return None
                 
     except sqlite3.Error as e:
         logger.error(f"Failed to retrieve wallet info: {str(e)}")
