@@ -27,13 +27,12 @@ def initialize_agent():
 
     # Load agent wallet information from database or environment variables
     if wallet_info:
-        wallet_id = wallet_info["wallet_id"]
         wallet_seed = wallet_info["seed"]
-        print("Initialized CDP Agentkit with wallet data from database:", wallet_id, wallet_seed, flush=True)
-        values = {"cdp_wallet_data": json.dumps({ "wallet_id": wallet_id, "seed": wallet_seed })}
-    elif wallet_id and wallet_seed:
-        print("Initialized CDP Agentkit with wallet data from environment:", wallet_id, wallet_seed, flush=True)
-        values = {"cdp_wallet_data": json.dumps({ "wallet_id": wallet_id, "seed": wallet_seed })}
+        print("Initialized CDP Agentkit with wallet seed from database:", wallet_seed, flush=True)
+        values = {"wallet_seed": wallet_seed}
+    elif wallet_seed:
+        print("Initialized CDP Agentkit with wallet seed from environment:", wallet_seed, flush=True)
+        values = {"wallet_seed": wallet_seed}
 
     agentkit = CdpAgentkitWrapper(**values)
 
