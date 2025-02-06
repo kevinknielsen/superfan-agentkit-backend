@@ -1,6 +1,8 @@
+
 import os
 import constants
 import json
+import logging
 
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
@@ -12,31 +14,24 @@ from cdp_langchain.utils import CdpAgentkitWrapper
 from db.wallet import add_wallet_info, get_wallet_info
 from agent.custom_actions.get_latest_block import get_latest_block
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 def initialize_agent():
     """Initialize the agent with CDP Agentkit."""
     # Initialize LLM.
     llm = ChatOpenAI(model=constants.AGENT_MODEL)
 
-    # Read wallet data from environment variable or database
-    wallet_id = os.getenv(constants.WALLET_ID_ENV_VAR)
+    # Only use wallet from environment variables (Replit secrets)
     wallet_seed = os.getenv(constants.WALLET_SEED_ENV_VAR)
-    wallet_info = json.loads(get_wallet_info()) if get_wallet_info() else None
+    if not wallet_seed:
+        logger.error("No wallet seed found in environment variables")
+        raise ValueError("CDP_WALLET_SEED must be set in Replit secrets")
 
-    # Configure CDP Agentkit Langchain Extension.
-    values = {}
+    logger.info("Initializing CDP Agentkit with wallet from environment")
+    agentkit = CdpAgentkitWrapper(wallet_seed=wallet_seed)
 
-    # Load agent wallet information from database or environment variables
-    if wallet_info:
-        wallet_seed = wallet_info["seed"]
-        logger.info("Using wallet from database")
-        values = {"wallet_seed": wallet_seed}
-    elif wallet_seed:
-        logger.info("Using wallet from environment")
-        values = {"wallet_seed": wallet_seed}
-
-    agentkit = CdpAgentkitWrapper(**values)
-
-    # Export and store the updated wallet data back to environment variable
+    # Export and store the updated wallet data
     wallet_data = agentkit.export_wallet()
     add_wallet_info(json.dumps(wallet_data))
     logger.info("Wallet configuration updated")
