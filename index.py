@@ -1,6 +1,5 @@
 from flask import Flask, request, Response, stream_with_context, jsonify
 from flask_cors import CORS
-from dotenv import load_dotenv
 
 from agent.initialize_agent import initialize_agent
 from agent.run_agent import run_agent
@@ -8,7 +7,6 @@ from db.setup import setup
 from db.tokens import get_tokens
 from db.nfts import get_nfts
 
-load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
