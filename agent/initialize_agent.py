@@ -35,17 +35,7 @@ def initialize_agent():
         print("Initialized CDP Agentkit with wallet data from environment:", wallet_id, wallet_seed, flush=True)
         values = {"cdp_wallet_data": json.dumps({ "wallet_id": wallet_id, "seed": wallet_seed })}
 
-    try:
-        agentkit = CdpAgentkitWrapper(**values)
-    except Exception as e:
-        # If wallet not found, create a new one
-        from cdp import Wallet
-        network_id = os.getenv('NETWORK_ID', 'base-sepolia')
-        print(f"Creating new wallet on network: {network_id}", flush=True)
-        new_wallet = Wallet.create(network_id=network_id)
-        values = {"cdp_wallet_data": json.dumps(new_wallet.export())}
-        agentkit = CdpAgentkitWrapper(**values)
-
+    agentkit = CdpAgentkitWrapper(**values)
 
     # Export and store the updated wallet data back to environment variable
     wallet_data = agentkit.export_wallet()
