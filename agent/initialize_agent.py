@@ -22,19 +22,15 @@ def initialize_agent():
     # Initialize LLM.
     llm = ChatOpenAI(model=constants.AGENT_MODEL)
 
-    # Only use wallet from environment variables (Replit secrets)
+    # Get wallet seed from environment variables (Replit secrets)
     wallet_seed = os.getenv(constants.WALLET_SEED_ENV_VAR)
     if not wallet_seed:
         logger.error("No wallet seed found in environment variables")
         raise ValueError("CDP_WALLET_SEED must be set in Replit secrets")
 
-    logger.info("Initializing CDP Agentkit with wallet from environment")
+    logger.info("Initializing CDP Agentkit with wallet from secrets")
     agentkit = CdpAgentkitWrapper(wallet_seed=wallet_seed)
-
-    # Export and store the updated wallet data
-    wallet_data = agentkit.export_wallet()
-    add_wallet_info(json.dumps(wallet_data))
-    logger.info("Wallet configuration updated")
+    logger.info(f"Using wallet address: {agentkit.wallet.address}")
 
     # Initialize CDP Agentkit Toolkit and get tools.
     cdp_toolkit = CdpToolkit.from_cdp_agentkit_wrapper(agentkit)
