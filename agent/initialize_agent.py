@@ -30,7 +30,7 @@ def initialize_agent():
 
     logger.info("Initializing CDP Agentkit with wallet from secrets")
     agentkit = CdpAgentkitWrapper(wallet_seed=wallet_seed)
-    logger.info(f"Using wallet address: {agentkit.wallet.address}")
+    logger.info(f"Using wallet address: {agentkit.wallet._address}")
 
     # Initialize CDP Agentkit Toolkit and get tools.
     cdp_toolkit = CdpToolkit.from_cdp_agentkit_wrapper(agentkit)
