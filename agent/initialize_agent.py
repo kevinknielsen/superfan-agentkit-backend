@@ -29,6 +29,9 @@ def initialize_agent():
         raise ValueError("CDP_WALLET_SEED must be set in Replit secrets")
 
     logger.info("Initializing CDP Agentkit with wallet from secrets")
+    # Convert wallet seed to bytes if it's a hex string
+    if wallet_seed.startswith('0x'):
+        wallet_seed = bytes.fromhex(wallet_seed[2:])
     agentkit = CdpAgentkitWrapper(wallet_seed=wallet_seed)
     logger.info(f"Using wallet address: {agentkit.wallet._address}")
 
