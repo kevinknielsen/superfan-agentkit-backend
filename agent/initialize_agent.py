@@ -2,6 +2,10 @@ import os
 import constants
 import json
 
+from cdp import Wallet
+from cdp import errors as cdp
+
+
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
@@ -35,7 +39,13 @@ def initialize_agent():
         print("Initialized CDP Agentkit with wallet data from environment:", wallet_id, wallet_seed, flush=True)
         values = {"cdp_wallet_data": json.dumps({ "wallet_id": wallet_id, "seed": wallet_seed })}
 
-    agentkit = CdpAgentkitWrapper(**values)
+    try:
+        agentkit = CdpAgentkitWrapper(**values)
+    except cdp.errors.NotFoundError:
+        # If wallet not found, create it first
+        wallet = Wallet.create(network_id=os.getenv('NETWORK_ID', 'base-sepolia'))
+        values['wallet_data'] = wallet.export_data()
+        agentkit = CdpAgentkitWrapper(**values)
 
     # Export and store the updated wallet data back to environment variable
     wallet_data = agentkit.export_wallet()
