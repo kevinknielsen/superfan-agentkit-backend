@@ -1,0 +1,29 @@
+Initialized CDP Agentkit with wallet data from environment: 0xd8BaD9e3832233001BA5a5979Fd149382E1583b7 0x88cae3fa1d59890c36b2dbf9d93b760708c8467349256fa25498938af14acc20
+Traceback (most recent call last):
+  File "/home/runner/workspace/index.py", line 17, in <module>
+    agent_executor = initialize_agent()
+                     ^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/agent/initialize_agent.py", line 38, in initialize_agent
+    agentkit = CdpAgentkitWrapper(**values)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/pydantic/main.py", line 212, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/cdp_langchain/utils/cdp_agentkit_wrapper.py", line 51, in validate_environment
+    wallet = Wallet.import_data(wallet_data)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/cdp/wallet.py", line 245, in import_data
+    model = Cdp.api_clients.wallets.get_wallet(data.wallet_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/pydantic/validate_call_decorator.py", line 60, in wrapper_function
+    return validate_call_wrapper(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/pydantic/_internal/_validate_call.py", line 96, in __call__
+    res = self.__pydantic_validator__.validate_python(pydantic_core.ArgsKwargs(args, kwargs))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/cdp/client/api/wallets_api.py", line 380, in get_wallet
+    return self.api_client.response_deserialize(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/workspace/.pythonlibs/lib/python3.12/site-packages/cdp/cdp_api_client.py", line 141, in response_deserialize
+    raise ApiError.from_error(e) from None
+cdp.errors.NotFoundError: ApiError(http_code=404, api_code=not_found, api_message=wallet not found, correlation_id=90ddf19c1e44eaff-ORD)
