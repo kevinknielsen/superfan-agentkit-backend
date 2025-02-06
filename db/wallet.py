@@ -30,9 +30,9 @@ def add_wallet_info(info: str) -> None:
             con.commit()
             
             if cur.rowcount > 0:
-                logger.info("Successfully saved wallet info")
+                logger.info("Wallet configuration updated")
             else:
-                logger.warning("No changes made to wallet info")
+                logger.warning("No changes made to wallet configuration")
                 
     except sqlite3.Error as e:
         logger.error(f"Database error occurred: {str(e)}")
