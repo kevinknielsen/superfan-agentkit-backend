@@ -29,7 +29,17 @@ def initialize_agent():
         raise ValueError("CDP_WALLET_SEED must be set in Replit secrets")
 
     logger.info("Initializing CDP Agentkit with wallet from secrets")
-    agentkit = CdpAgentkitWrapper(wallet_seed=wallet_seed)
+    wallet_info = get_wallet_info()
+    
+    if wallet_info:
+        logger.info("Found existing wallet info in database")
+        agentkit = CdpAgentkitWrapper.from_wallet_data(wallet_info)
+    else:
+        logger.info("Creating new wallet from seed")
+        agentkit = CdpAgentkitWrapper(wallet_seed=wallet_seed)
+        wallet_data = agentkit.export_wallet()
+        add_wallet_info(json.dumps(wallet_data))
+    
     logger.info(f"Using wallet address: {agentkit.wallet._address}")
 
     # Initialize CDP Agentkit Toolkit and get tools.
